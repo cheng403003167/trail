@@ -4,7 +4,7 @@
   "description": "",
   "main": "server/index.js",
   "scripts": {
-    "start":"node server/index.js",
+    "start": "node server/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -22,6 +22,8 @@
   },
   "homepage": "https://github.com/cheng403003167/trail#readme",
   "dependencies": {
-    "koa2": "^2.0.0-alpha.7"
+    "ejs": "^2.5.7",
+    "koa2": "^2.0.0-alpha.7",
+    "pug": "^2.0.3"
   }
 }
