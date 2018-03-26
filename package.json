@@ -23,6 +23,7 @@
   "homepage": "https://github.com/cheng403003167/trail#readme",
   "dependencies": {
     "ejs": "^2.5.7",
+    "koa-views": "^6.1.4",
     "koa2": "^2.0.0-alpha.7",
     "pug": "^2.0.3"
   }
