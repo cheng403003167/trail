@@ -41,6 +41,7 @@ console.log('Start visit the target page');
         return links;
     })
     await browser.close();
-    console.log(result);
+    process.send({result})
+    process.exit(0);
     
 })();
