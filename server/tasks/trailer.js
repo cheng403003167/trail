@@ -17,6 +17,7 @@ const { resolve } = require('path');
         console.log(err);
     })
     child.on('message',data =>{
+        //https://img3.doubanio.com/view/photo/s_ratio_poster/public/p2457983084.jpg
         console.log(data);
     })
 })()
