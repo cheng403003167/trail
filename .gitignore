@@ -58,3 +58,5 @@ typings/
 .env
 
 mima.txt
+
+test/oss.js

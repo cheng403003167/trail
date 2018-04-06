@@ -24,6 +24,7 @@
   "homepage": "https://github.com/cheng403003167/trail#readme",
   "dependencies": {
     "ali-oss": "^4.13.2",
+    "chalk": "^2.3.2",
     "ejs": "^2.5.7",
     "koa-static": "^4.0.2",
     "koa-views": "^6.1.4",
