@@ -14,13 +14,17 @@ var client = new OSS.Wrapper({
   endpoint:'oss-cn-shenzhen.aliyuncs.com'
 });
 function upDate(url){
-  writeFile.downHttpData(url,'binary').then(function(stra){
-    client.putStream('first/'+stra.fileName,stra.dup).then(function(res){
-      console.log(res.name)
-    }).catch(err=>{
-      console.error(chalk.blue(Data.fileName + '上传失败' + err));
+  return new Promise(function(resolve){
+    return writeFile.downHttpData(url,'binary').then(function(stra){
+      return client.putStream('first/'+stra.fileName,stra.dup).then(function(res){
+        resolve(res);
+      }).catch(err=>{
+        reject(err)
+        console.error(chalk.blue('上传失败' + err));
+      });
     });
-  });
+  })
+  
 }
 // function UpDate(url){
 //   var Data = '';
@@ -37,10 +41,8 @@ function upDate(url){
 //   });
 // }
 
-upDate(url)
-upDate(url2)
 
-exports.upDate;
+module.exports = upDate;
 
 
 

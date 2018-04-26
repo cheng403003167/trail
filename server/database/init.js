@@ -1,10 +1,29 @@
 const mongoose = require('mongoose');
 const db = 'mongodb://localhost/demo';
-
+const glob = require('glob');
+const {resolve} = require('path')
 
 mongoose.Promise = global.Promise;
 
-module.exports = connect = () =>{
+exports.initSchemas = () =>{
+    glob.sync(resolve(__dirname,'./schema/','**/*.js')).forEach(require)
+}
+
+exports.initAdmin = async () =>{
+    const User = mongoose.model('User');
+    let user = await User.findOne({
+        username:'chen'
+    });
+    if(!user){
+        const user = await new User({
+            username:'chen',
+            email:'dnitu.top',
+            password:'123abc'
+        });
+        await user.save();
+    }
+}
+exports.connect = () =>{
     let maxConnectTimes = 0;
 
     return new Promise((resolve,reject)=>{

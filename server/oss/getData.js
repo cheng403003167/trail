@@ -15,6 +15,9 @@ class GetWebData {
     getOthHttp(url,encoding,fileName=null){
         if(!fileName){
             fileName = path.basename(url);
+            if(fileName.indexOf('?') > -1){
+                fileName = fileName.split('?')[0];
+            }
         }
         return new Promise(function(resolve){
             http.get(url,(res)=>{
@@ -34,6 +37,9 @@ class GetWebData {
     getOthHttps(url,encoding,fileName=null){
         if(!fileName){
             fileName = path.basename(url);
+            if(fileName.indexOf('?') > -1){
+                fileName = fileName.split('?')[0];
+            }
         }
         return new Promise(function(resolve){
             https.get(url,(res)=>{

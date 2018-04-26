@@ -1,6 +1,35 @@
-let movies = [{
-    video: 'http://vt1.doubanio.com/201803292143/3762e0c6699dae51014b1bc22399356e/view/movie/M/302160387.mp4',
-    doubanId: '26387939',
-    poster:'https://img3.doubanio.com/view/photo/s_ratio_poster/public/p2457983084.jpg',
-    cover: 'https://img1.doubanio.com/img/trailer/medium/2457624899.jpg?'
-}]
+const upDate = require('../oss/oss.js');
+const path = require('path');
+const mongoose = require('mongoose');
+const Movie = mongoose.model('Movie');
+function downData(url,fiel,movie){
+    return upDate(url).then(res=>{
+        movie[fiel] = res.name;
+        console.log(res.name)
+    }).catch(function(err){
+        console.log(err);
+    })
+};
+;(async () => {
+    let movies = await Movie.find({
+        $or:[
+            {videoKey:{$exists:false}},
+            {videoKey:null},
+            {videoKey:''}
+        ]
+    });
+    for(let i = 0;i< movies.length;i++){
+        let movie = movies[i];
+        if(movie.video && !movie.videoKey){
+            await Promise.all([
+                downData(movie.video,'videoKey',movie),
+                downData(movie.cover,'coverKey',movie),
+                downData(movie.poster,'posterKey',movie)
+            ]).then(function(){
+                movie.save();
+            }).catch(err=>{
+                console.log(err);
+            })
+        }
+    };
+})()
