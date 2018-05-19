@@ -2,6 +2,7 @@ const Router = require('koa-router');
 const glob = require('glob');
 const { resolve } = require('path');
 const _ = require('lodash');
+const R = require('ramda')
 
 const symbolPrefix = Symbol('prefix');
 const routerMap = new Map();
@@ -16,7 +17,6 @@ class Route {
         this.router = new Router();
     }
     init(){
-        console.log(4354)
         glob.sync(resolve(this.apiPath,'./**/*.js')).forEach(require);
 
         for (let [conf,controller] of routerMap){
@@ -25,10 +25,9 @@ class Route {
             if(prefixPath) prefixPath = normalizePath(prefixPath);
             const routerPath = prefixPath + conf.path;
             this.router[conf.method](routerPath,...controllers)
-            console.log(routerPath)
         }
         this.app.use(this.router.routes());
-        this.app.use(this.router.all());
+        this.app.use(this.router.allowedMethods());
     }
 }
 
@@ -59,7 +58,7 @@ const put = path => router({
     path: path
 })
 const del = path => router({
-    method: 'del',
+    method: 'delete',
     path: path
 })
 const use = path => router({
@@ -71,6 +70,72 @@ const all = path => router({
     path: path
 })
 
+const changeToArr = R.unless(
+    R.is(isArray),
+    R.of
+)
+
+const decorate = (args, middleware) => {
+    let [ target, key, descriptor ] = args
+    target[key] = isArray(target[key])
+    target[key].unshift(middleware)
+    
+    return descriptor
+}
+
+const convert = middleware => (...args) => decorate(args, middleware)
+
+const auth = convert(async (ctx, next) => {
+    if(!ctx.session.user){
+        return (
+            ctx.body = {
+                success: false,
+                code: 401,
+                err: '登录信息失效，重新登录'
+            }
+        )
+    }
+    await next()
+})
+
+const admin = roleExpected => convert(async (ctx, next) => {
+    const { role } = ctx.session.user
+    const rules = {
+        admin: [1,4,5],
+        superAdmin: [1,2,3,4]
+    }
+    if(!role || role !== roleExpected){
+        return (
+            ctx.body = {
+                success: false,
+                code: 401,
+                err: '你没有权限'
+            }
+        )
+    }
+    await next()
+})
+
+const required = rules => convert(async (ctx, next) => {
+    let errors = []
+
+    const checkRules = R.forEachObjIndexed(
+        (value, key) =>{
+            errors = R.filter(i => !R.has(i, ctx, ctx.request[key]))(value)
+        }
+    )
+    checkRules(rules)
+    if(errors.length) {
+        ctx.body = {
+            success: false,
+            code: 412,
+            err: `${errors.join(',')} is required`
+        }
+    }
+
+    await next()
+})
+
 module.exports = {
     Route,
     controller,
@@ -79,5 +144,8 @@ module.exports = {
     put,
     del,
     use,
-    all
+    all,
+    auth,
+    admin,
+    required
 }

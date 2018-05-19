@@ -8,7 +8,8 @@ const {
 } = require('../lib/decorator');
 const { 
     getAllMovies,
-    getMovieDetail 
+    getMovieDetail,
+    getRelativeMovies
 } = require('../service/movie');
 
 @controller('/api/v0/movies')
@@ -18,7 +19,8 @@ class movieController {
         const {type,year} = ctx.query
         const movies = await getAllMovies(type,year);
         ctx.body = {
-            movies
+            success: true,
+            data:movies
         }
     }
 

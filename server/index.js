@@ -1,10 +1,11 @@
 const Koa = require('koa2');
+const cors = require('koa2-cors');
 const mongoose = require('mongoose');
 const views = require('koa-views');
 const { resolve } = require('path');
 const {connect,initAdmin,initSchemas}= require('./database/init');
 const R = require('ramda');
-const MIDDLEWARES = ['router'];
+const MIDDLEWARES = ['common','router'];
 
 
 const useMiddlewares = (app) =>{
@@ -27,6 +28,19 @@ const useMiddlewares = (app) =>{
     // require('./tasks/trailer');
     // require('./tasks/qiniu');
     const app = new Koa();
+    app.use(cors({
+        origin: function(ctx) {
+          if (ctx.url === '/test') {
+            return false;
+          }
+          return '*';
+        },
+        exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
+        maxAge: 5,
+        credentials: true,
+        allowMethods: ['GET', 'POST', 'DELETE'],
+        allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
+      }));
     await useMiddlewares(app);
     app.listen(8089);
 })()
