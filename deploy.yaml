@@ -1,14 +1,14 @@
 apps:
   - script: ./server/index.js
     name: 'Koa2'
-    env: 
+    env:
       COMMON_VARIABLE: true
     env_production:
       NODE_ENV: production
 deploy:
   production:
     user: root
-    host: 
+    host:
       - 120.79.238.176
     port: 22
     ref: origin/master
