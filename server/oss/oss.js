@@ -8,8 +8,8 @@ var writeFile = require('./getData');
 var url = 'https://img3.doubanio.com/view/photo/s_ratio_poster/public/p2457983084.jpg';
 var url2 = 'https://img1.doubanio.com/img/trailer/medium/2457624899.jpg';
 var client = new OSS.Wrapper({
-  accessKeyId: 'LTAIxGrbAO9cD0lj',
-  accessKeySecret: 's8giJOlrSrBm73KohGGCfBtnwQlolv',
+  accessKeyId: '',
+  accessKeySecret: '',
   bucket:'traile',
   endpoint:'oss-cn-shenzhen.aliyuncs.com'
 });
