@@ -16,10 +16,10 @@ exports.initAdmin = async () =>{
     });
     if(!user){
         const user = await new User({
-            username:'chen',
-            email:'dnitu.top',
-            password:'123abc',
-            role: 'admin'
+            username:'',
+            email:'',
+            password:'',
+            role: ''
         });
         await user.save();
     }
